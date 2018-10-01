@@ -1,0 +1,10 @@
+match tx {
+case tx:DataTransaction =>
+
+   let signed =  sigVerify(tx.bodyBytes,tx.proofs[0],contractPubKey)
+
+   tx.data[0].key == "randomNumber" && tx.data[1].key == "basedOnBlockHeight" && tx.data[2].key == "basedOnBlockSignature"
+   && size(tx.data) == 3 && signed
+
+case _ => false
+}
