@@ -35,17 +35,13 @@ object RSACrypto {
     * @return  keypair
     */
   def getKeyPairFromKeyStore(password: String, keyPassword: String, alias: String): KeyPair = {
-    //Generated with:
-    //keytool -genkeypair -alias mykey -storepass s3cr3t -keypass s3cr3t -keyalg RSA -keystore keystore.jks
     val stream = new FileInputStream(new File("keystore.jks"))
     val keyStore = KeyStore.getInstance("JKS")
     keyStore.load(stream, password.toCharArray) //Keystore password
     val keyPass = new KeyStore.PasswordProtection(keyPassword.toCharArray)
     val privateKeyEntry = keyStore.getEntry(alias, keyPass).asInstanceOf[KeyStore.PrivateKeyEntry]
     val cert = keyStore.getCertificate(alias)
-    val publicKey = cert.getPublicKey
-    val privateKey = privateKeyEntry.getPrivateKey
-    new KeyPair(publicKey, privateKey)
+    new KeyPair(cert.getPublicKey, privateKeyEntry.getPrivateKey)
   }
 
   /**
@@ -71,9 +67,9 @@ object RSACrypto {
     */
   def decrypt(cipherText: String, privateKey: PrivateKey): String = {
     val bytes = Base64.getDecoder.decode(cipherText)
-    val decriptCipher = Cipher.getInstance("RSA")
-    decriptCipher.init(Cipher.DECRYPT_MODE, privateKey)
-    new String(decriptCipher.doFinal(bytes), UTF_8)
+    val decryptCipher = Cipher.getInstance("RSA")
+    decryptCipher.init(Cipher.DECRYPT_MODE, privateKey)
+    new String(decryptCipher.doFinal(bytes), UTF_8)
   }
 
   /**
