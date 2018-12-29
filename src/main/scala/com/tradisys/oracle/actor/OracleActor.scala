@@ -29,7 +29,7 @@ object OracleActor {
         val node = new Node(oracle.nodeURI)
         dexApi.getCurrentHeight().flatMap(currentBlockHeight => {
           if (currentBlockHeight - oracle.currentHeight >= OracleConstants.BLOCK_PERIOD) {
-            val lastBlockInfoFuture = dexApi.getBlockInfoByHeight(currentBlockHeight - 1)
+            val lastBlockInfoFuture = dexApi.getBlockInfoByHeight(currentBlockHeight - 5)
             for{
               lastBlockInfo <- lastBlockInfoFuture
             }yield{
